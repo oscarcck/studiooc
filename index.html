@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark"><head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Studio OC — Coming Soon</title>
+  <meta name="description" content="Studio OC is coming soon. Stay tuned.">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
+  <link href="https://api.fontshare.com/v2/css?f[]=cabinet-grotesk@400,500,700,800&amp;f[]=zodiak@400,700&amp;display=swap" rel="stylesheet">
+
+  <style>
+    /* ─── Design Tokens ─── */
+    :root, [data-theme="light"] {
+      --color-bg:             #f7f6f2;
+      --color-surface:        #f0ede8;
+      --color-text:           #1a1916;
+      --color-text-muted:     #6b6a65;
+      --color-text-faint:     #b0aea8;
+      --color-primary:        #01696f;
+      --color-primary-hover:  #0c4e54;
+      --color-border:         rgba(28,25,20,0.1);
+      --color-divider:        rgba(28,25,20,0.08);
+      --shadow-md: 0 4px 24px rgba(20,18,14,0.1);
+
+      --font-display: 'Zodiak', 'Georgia', serif;
+      --font-body: 'Cabinet Grotesk', 'Helvetica Neue', sans-serif;
+
+      --text-xs:   clamp(0.75rem,  0.7rem  + 0.25vw, 0.875rem);
+      --text-sm:   clamp(0.875rem, 0.8rem  + 0.35vw, 1rem);
+      --text-base: clamp(1rem,     0.95rem + 0.25vw, 1.125rem);
+      --text-lg:   clamp(1.125rem, 1rem    + 0.75vw, 1.5rem);
+      --text-xl:   clamp(1.5rem,   1.2rem  + 1.25vw, 2.25rem);
+      --text-2xl:  clamp(2rem,     1.2rem  + 2.5vw,  3.5rem);
+      --text-hero: clamp(3.5rem,   1rem    + 7vw,    8.5rem);
+
+      --space-2: 0.5rem;
+      --space-3: 0.75rem;
+      --space-4: 1rem;
+      --space-6: 1.5rem;
+      --space-8: 2rem;
+      --space-10: 2.5rem;
+      --space-12: 3rem;
+      --space-16: 4rem;
+      --space-20: 5rem;
+      --radius-sm: 0.375rem;
+      --radius-full: 9999px;
+      --transition-interactive: 180ms cubic-bezier(0.16,1,0.3,1);
+    }
+
+    [data-theme="dark"] {
+      --color-bg:             #111110;
+      --color-surface:        #1a1917;
+      --color-text:           #e8e6e0;
+      --color-text-muted:     #7a7874;
+      --color-text-faint:     #484744;
+      --color-primary:        #4f98a3;
+      --color-primary-hover:  #74b8c2;
+      --color-border:         rgba(255,255,255,0.08);
+      --color-divider:        rgba(255,255,255,0.05);
+      --shadow-md: 0 4px 24px rgba(0,0,0,0.4);
+    }
+
+    @media (prefers-color-scheme: light) {
+      :root:not([data-theme]) {
+        --color-bg: #f7f6f2; --color-surface: #f0ede8;
+        --color-text: #1a1916; --color-text-muted: #6b6a65;
+        --color-text-faint: #b0aea8; --color-primary: #01696f;
+        --color-primary-hover: #0c4e54; --color-border: rgba(28,25,20,0.1);
+        --color-divider: rgba(28,25,20,0.08); --shadow-md: 0 4px 24px rgba(20,18,14,0.1);
+      }
+    }
+
+    /* ─── Base Reset ─── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { -webkit-font-smoothing: antialiased; text-rendering: optimizeLegibility; scroll-behavior: smooth; }
+    body {
+      min-height: 100dvh; font-family: var(--font-body); font-size: var(--text-base);
+      color: var(--color-text); background-color: var(--color-bg);
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      position: relative; overflow: hidden;
+    }
+    img { display: block; max-width: 100%; }
+    button { cursor: pointer; background: none; border: none; font: inherit; color: inherit; }
+    a, button { transition: color var(--transition-interactive), opacity var(--transition-interactive); }
+    :focus-visible { outline: 2px solid var(--color-primary); outline-offset: 3px; border-radius: var(--radius-sm); }
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
+    }
+
+    /* ─── Background grain ─── */
+    body::before {
+      content: '';
+      position: fixed; inset: 0; z-index: 0; pointer-events: none;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+      opacity: 0.03;
+    }
+
+    /* ─── Radial glow ─── */
+    .glow {
+      position: fixed; border-radius: 50%; filter: blur(120px); pointer-events: none; z-index: 0;
+    }
+    .glow-1 {
+      width: 60vmax; height: 60vmax;
+      top: -20vmax; left: -10vmax;
+      background: radial-gradient(circle, oklch(0.55 0.09 192 / 0.12), transparent 70%);
+    }
+    .glow-2 {
+      width: 50vmax; height: 50vmax;
+      bottom: -15vmax; right: -10vmax;
+      background: radial-gradient(circle, oklch(0.65 0.05 240 / 0.08), transparent 70%);
+    }
+
+    /* ─── Theme toggle ─── */
+    .theme-toggle {
+      position: fixed; top: var(--space-6); right: var(--space-6); z-index: 10;
+      width: 40px; height: 40px; border-radius: var(--radius-full);
+      border: 1px solid var(--color-border); background: var(--color-surface);
+      display: flex; align-items: center; justify-content: center;
+      color: var(--color-text-muted); box-shadow: var(--shadow-md);
+    }
+    .theme-toggle:hover { color: var(--color-text); }
+
+    /* ─── Main layout ─── */
+    .site-wrapper {
+      position: relative; z-index: 1;
+      display: flex; flex-direction: column; align-items: center;
+      text-align: center; padding: var(--space-12) var(--space-6);
+      max-width: 720px; width: 100%;
+      animation: fadeUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) both;
+    }
+
+    @keyframes fadeUp {
+      from { opacity: 0; clip-path: inset(20px 0 0 0); }
+      to   { opacity: 1; clip-path: inset(0 0 0 0); }
+    }
+
+    /* ─── Logo ─── */
+    .logo-wrap {
+      margin-bottom: var(--space-10);
+      animation: fadeUp 0.8s 0.1s cubic-bezier(0.16, 1, 0.3, 1) both;
+    }
+    .logo-wrap svg { margin-inline: auto; }
+
+    /* ─── Badge ─── */
+    .badge {
+      display: inline-flex; align-items: center; gap: var(--space-2);
+      font-size: var(--text-xs); font-weight: 600; letter-spacing: 0.1em;
+      text-transform: uppercase; color: var(--color-primary);
+      border: 1px solid var(--color-primary);
+      padding: var(--space-2) var(--space-4); border-radius: var(--radius-full);
+      margin-bottom: var(--space-8);
+      animation: fadeUp 0.8s 0.2s cubic-bezier(0.16, 1, 0.3, 1) both;
+    }
+    .badge-dot {
+      width: 6px; height: 6px; border-radius: 50%;
+      background: var(--color-primary);
+      animation: pulse 2s ease-in-out infinite;
+    }
+    @keyframes pulse {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.5; transform: scale(0.8); }
+    }
+
+    /* ─── Headline ─── */
+    .headline {
+      font-family: var(--font-display);
+      font-size: var(--text-hero);
+      font-weight: 700;
+      line-height: 1.0;
+      letter-spacing: -0.02em;
+      color: var(--color-text);
+      margin-bottom: var(--space-6);
+      animation: fadeUp 0.8s 0.3s cubic-bezier(0.16, 1, 0.3, 1) both;
+    }
+    .headline em {
+      font-style: italic;
+      color: var(--color-primary);
+    }
+
+    /* ─── Subtitle ─── */
+    .subtitle {
+      font-size: var(--text-lg);
+      color: var(--color-text-muted);
+      line-height: 1.6;
+      max-width: 44ch;
+      margin-inline: auto;
+      margin-bottom: var(--space-10);
+      animation: fadeUp 0.8s 0.4s cubic-bezier(0.16, 1, 0.3, 1) both;
+    }
+
+    /* ─── Divider ─── */
+    .divider {
+      width: 48px; height: 1px;
+      background: var(--color-divider);
+      margin: 0 auto var(--space-10);
+      animation: fadeUp 0.8s 0.45s cubic-bezier(0.16, 1, 0.3, 1) both;
+    }
+
+    /* ─── Notify form ─── */
+    .notify-form {
+      display: flex; gap: var(--space-3); flex-wrap: wrap; justify-content: center;
+      margin-bottom: var(--space-8);
+      animation: fadeUp 0.8s 0.5s cubic-bezier(0.16, 1, 0.3, 1) both;
+    }
+    .notify-input {
+      padding: var(--space-3) var(--space-6);
+      font-size: var(--text-sm); font-family: var(--font-body);
+      border-radius: var(--radius-full);
+      border: 1px solid var(--color-border);
+      background: var(--color-surface);
+      color: var(--color-text);
+      outline: none; min-width: 220px;
+      transition: border-color var(--transition-interactive), box-shadow var(--transition-interactive);
+    }
+    .notify-input::placeholder { color: var(--color-text-faint); }
+    .notify-input:focus {
+      border-color: var(--color-primary);
+      box-shadow: 0 0 0 3px oklch(from var(--color-primary) l c h / 0.15);
+    }
+    .notify-btn {
+      padding: var(--space-3) var(--space-8);
+      font-size: var(--text-sm); font-weight: 600;
+      border-radius: var(--radius-full);
+      background: var(--color-primary); color: #fff;
+      border: none; cursor: pointer;
+      transition: background var(--transition-interactive), transform var(--transition-interactive);
+    }
+    .notify-btn:hover { background: var(--color-primary-hover); }
+    .notify-btn:active { transform: scale(0.97); }
+
+    .notify-success {
+      display: none; font-size: var(--text-sm); color: var(--color-primary);
+      font-weight: 500; margin-top: calc(-1 * var(--space-4));
+      margin-bottom: var(--space-4);
+    }
+
+    /* ─── Social links ─── */
+    .social-links {
+      display: flex; gap: var(--space-4); align-items: center; justify-content: center;
+      animation: fadeUp 0.8s 0.6s cubic-bezier(0.16, 1, 0.3, 1) both;
+    }
+    .social-link {
+      display: flex; align-items: center; justify-content: center;
+      width: 40px; height: 40px; border-radius: var(--radius-full);
+      border: 1px solid var(--color-border);
+      color: var(--color-text-muted); text-decoration: none;
+      transition: color var(--transition-interactive), border-color var(--transition-interactive), background var(--transition-interactive);
+    }
+    .social-link:hover {
+      color: var(--color-text); border-color: var(--color-text-muted);
+      background: var(--color-surface);
+    }
+
+    /* ─── Footer ─── */
+    .footer {
+      position: fixed; bottom: var(--space-6);
+      font-size: var(--text-xs); color: var(--color-text-faint);
+      letter-spacing: 0.04em;
+      animation: fadeUp 0.8s 0.7s cubic-bezier(0.16, 1, 0.3, 1) both;
+    }
+
+    /* ─── Mobile ─── */
+    @media (max-width: 480px) {
+      .notify-input { min-width: 100%; }
+      .notify-btn { width: 100%; }
+      .notify-form { flex-direction: column; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Background glows -->
+  <div class="glow glow-1" aria-hidden="true"></div>
+  <div class="glow glow-2" aria-hidden="true"></div>
+
+  <!-- Theme toggle -->
+  
+
+  <main class="site-wrapper" role="main">
+
+    <!-- Logo -->
+    <div class="logo-wrap" aria-label="Studio OC logo">
+      <svg width="64" height="64" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+        <!-- Outer ring -->
+        <circle cx="32" cy="32" r="30" stroke="currentColor" stroke-width="1.5" opacity="0.2"></circle>
+        <!-- Inner square rotated 45° — diamond -->
+        <rect x="22" y="22" width="20" height="20" rx="2" transform="rotate(45 32 32)" stroke="currentColor" stroke-width="1.5" fill="none" opacity="0.5"></rect>
+        <!-- OC letterform — O -->
+        <path d="M20 32 C20 25.4 25.4 20 32 20 L32 44 C25.4 44 20 38.6 20 32Z" fill="currentColor" opacity="0.85"></path>
+        <!-- OC letterform — C arc -->
+        <path d="M32 20 C38.6 20 44 25.4 44 32 C44 38.6 38.6 44 32 44" stroke="currentColor" stroke-width="3" stroke-linecap="round" fill="none"></path>
+        <!-- Center dot -->
+        <circle cx="32" cy="32" r="2.5" fill="var(--color-primary)"></circle>
+      </svg>
+    </div>
+
+    <!-- Badge -->
+    <div class="badge" role="status">
+      <span class="badge-dot" aria-hidden="true"></span>
+      Something is being built
+    </div>
+
+    <!-- Headline -->
+    <h1 class="headline">
+      Studio <em>OC</em>
+    </h1>
+
+    <!-- Subtitle -->
+    <p class="subtitle">
+      New work, new ideas, new beginnings — launching soon.
+    </p>
+
+    <div class="divider" aria-hidden="true"></div>
+
+    
+    
+    
+
+    
+    
+
+  </main>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <p>© 2026 Studio OC</p>
+  </footer>
+
+  
+
+
+</body></html>
